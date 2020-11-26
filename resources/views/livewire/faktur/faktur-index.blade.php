@@ -125,6 +125,7 @@
         </div>
     </div>
 </div>
+@csrf
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -208,7 +209,7 @@
         
         var tr = '<tr>' +
             '<td>' +
-                '<label for="">'+ namaBarang +'</label>' +
+                '<label for="">'+ goods +'</label>' +
             '</td>' +
             '<td>' +
                 '<label for="">'+ qty +'</label>' +
@@ -235,18 +236,20 @@
         const detail = detailJson();
         const detailData = JSON.parse(detail);
         const combineData = {head,detailData};
-        console.log(head);
-        console.log(detailData);
+        // console.log(head);
+        console.log(combineData);
         $.ajax({
-             type:'post',
+             method: 'POST',
              url:'{{ route('faktur.store') }}',
-             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-             data: head,
+             data: {
+                data: combineData,
+                _token: $('[name="_token"]').val()
+             },
              success:(res) => {
-                console.log("success : ", res);
+                // console.log("success : ", res);
              },
              error:err => {
-                 console.error(err)
+                 // console.error(err)
              }
          }); 
 
@@ -275,7 +278,7 @@
         var tbl2 = $('table tbody tr').each(function(e) {        
             x = $(this).children();
             var itArr = [];
-            var keys = ['namaBarang','qty','harga','totalHarga'];
+            var keys = ['idBarang','qty','harga','totalHarga'];
             x.each(function(i) {
                 itArr.push('"' + keys[i] + '":"' + $(this).text() + '"');
             });

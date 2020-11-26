@@ -48,12 +48,33 @@ class FakturController extends Controller
 
     
     public function store(Request $request){ 
+        $kodeFaktur = $request->data['head'][0]['kodeFaktur'];
+        $outletId = $request->data['head'][0]['outlet'];
+
+        // insert fakturs
+        DB::table('fakturs')->insert([
+            'slug' => 'tes', // set slugnya sendiri ya
+            'namaPengirim' => auth()->user()->name,
+            'invoice' => $kodeFaktur,
+            'outlet_id' => $outletId
+        ]);
+
+        // iteration goods detail
+        foreach($request->data['detailData'] as $data){
+            // insert faktur barang
+            DB::table('faktur_barangs')->insert([
+                'faktur_id' => $kodeFaktur, // lebih baik ganti jadi id fakturs bukan kode
+                'barang_id' => $data['idBarang'],
+                'qty' => $data['qty'],
+                'jumlah_harga' => $data['harga']
+            ]);
+        }
         
-$mahasiswa = json_decode($request->json()->all());
+        // $mahasiswa = json_decode($request->json()->all());
+        // Catatan tambahan: gunakan eloquent model pada proses CRUD database
+        // untuk hasil terbaik dan memudahkan dalam proses maintain
 
-return $mahasiswa;
-
-
+        return 'ok';
 
      }
 
